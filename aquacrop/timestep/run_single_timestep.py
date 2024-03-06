@@ -626,7 +626,6 @@ def solution_single_time_step(
                     NewCond.gdd_cum,
                     NewCond.Wr0, 
                     NewCond.Pcum, 
-                    IrrTot, 
                     NewCond.CRcum, 
                     NewCond.GWcum,
                     NewCond.Wr_end, 

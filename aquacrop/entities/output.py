@@ -45,7 +45,6 @@ class Output:
                 'GDD cummulative',
                 'Initial Soil Water (mm)',
                 'Precipitation (mm)',
-                'Irrigation (mm)',
                 'Capillary rise (mm)',
                 'GW inflow (mm)',
                 'Final Soil Water (mm)',
