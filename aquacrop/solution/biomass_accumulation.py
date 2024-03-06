@@ -133,7 +133,10 @@ def biomass_accumulation(
         FracBiomassPotSF=Crop.relbio_es[loc_]
 
         try:
-            BioAdj=FracBiomassPotSF+FracBiomassPotSF-NewCond_B/(Crop.Bio_top[NewCond_DAP]*WPadj)
+            if NewCond_DAP>1 and Crop.Bio_top[NewCond_DAP]>0:
+                BioAdj=FracBiomassPotSF+FracBiomassPotSF-NewCond_B/(Crop.Bio_top[NewCond_DAP]*WPadj)
+            else:
+                BioAdj=FracBiomassPotSF
         except:
             BioAdj=FracBiomassPotSF
         NewCond_B_NS=Crop.Bio_top[NewCond_DAP]*WPadj*FracBiomassPotSF

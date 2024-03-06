@@ -648,6 +648,7 @@ def solution_single_time_step(
                     NewCond.Tcum, 
                     NewCond.Rcum, 
                     NewCond.Percum,
+                    NewCond.biomass/100,
                 ]           
 
             if Crop.crop_perennial == False: # Annual crops
@@ -689,6 +690,7 @@ def solution_single_time_step(
                             NewCond.Tcum, 
                             NewCond.Rcum, 
                             NewCond.Percum,
+                            NewCond.biomass/100,
                         ]
 
     return NewCond, param_struct, outputs

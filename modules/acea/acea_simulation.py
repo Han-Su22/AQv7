@@ -601,33 +601,34 @@ class acea_model:
         self.gaez_LAIHI=pd.read_excel(ac.GetPath([self.data_folder,'gaez','GAEZ_LAI_HI.xlsx']),index_col='Crop/LUT')
         
         try:
-            self.soil_clay=[]
-            for item in ['0-5cm','5-15cm','15-30cm','30-60cm','60-100cm','100-200cm']:
-                ds = gdal.Open(ac.GetPath([self.data_folder,'soil','soilgrids',f'clay_{item}_mean_5000.tif']), gdal.GA_ReadOnly)
-                rb = ds.GetRasterBand(1)
-                self.soil_clay.append(rb.ReadAsArray())
+            if self.conf.use_soilgrids==1:
+                self.soil_clay=[]
+                for item in ['0-5cm','5-15cm','15-30cm','30-60cm','60-100cm','100-200cm']:
+                    ds = gdal.Open(ac.GetPath([self.data_folder,'soil','soilgrids',f'clay_{item}_mean_5000.tif']), gdal.GA_ReadOnly)
+                    rb = ds.GetRasterBand(1)
+                    self.soil_clay.append(rb.ReadAsArray())
+                    
+                self.soil_sand=[]
+                for item in ['0-5cm','5-15cm','15-30cm','30-60cm','60-100cm','100-200cm']:
+                    ds = gdal.Open(ac.GetPath([self.data_folder,'soil','soilgrids',f'sand_{item}_mean_5000.tif']), gdal.GA_ReadOnly)
+                    rb = ds.GetRasterBand(1)
+                    self.soil_sand.append(rb.ReadAsArray())
+                    
+                self.soil_soc=[]
+                for item in ['0-5cm','5-15cm','15-30cm','30-60cm','60-100cm','100-200cm']:
+                    ds = gdal.Open(ac.GetPath([self.data_folder,'soil','soilgrids',f'soc_{item}_mean_5000.tif']), gdal.GA_ReadOnly)
+                    rb = ds.GetRasterBand(1)
+                    self.soil_soc.append(rb.ReadAsArray())
+                    
+                self.soil_bd=[]#bulk density
+                for item in ['0-5cm','5-15cm','15-30cm','30-60cm','60-100cm','100-200cm']:
+                    ds = gdal.Open(ac.GetPath([self.data_folder,'soil','soilgrids',f'bdod_{item}_mean_5000.tif']), gdal.GA_ReadOnly)
+                    rb = ds.GetRasterBand(1)
+                    self.soil_bd.append(rb.ReadAsArray())
                 
-            self.soil_sand=[]
-            for item in ['0-5cm','5-15cm','15-30cm','30-60cm','60-100cm','100-200cm']:
-                ds = gdal.Open(ac.GetPath([self.data_folder,'soil','soilgrids',f'sand_{item}_mean_5000.tif']), gdal.GA_ReadOnly)
+                ds = gdal.Open(ac.GetPath([self.data_folder,'soil','soilgrids','id30forsoilgrids.tif']), gdal.GA_ReadOnly)
                 rb = ds.GetRasterBand(1)
-                self.soil_sand.append(rb.ReadAsArray())
-                
-            self.soil_soc=[]
-            for item in ['0-5cm','5-15cm','15-30cm','30-60cm','60-100cm','100-200cm']:
-                ds = gdal.Open(ac.GetPath([self.data_folder,'soil','soilgrids',f'soc_{item}_mean_5000.tif']), gdal.GA_ReadOnly)
-                rb = ds.GetRasterBand(1)
-                self.soil_soc.append(rb.ReadAsArray())
-                
-            self.soil_bd=[]#bulk density
-            for item in ['0-5cm','5-15cm','15-30cm','30-60cm','60-100cm','100-200cm']:
-                ds = gdal.Open(ac.GetPath([self.data_folder,'soil','soilgrids',f'bdod_{item}_mean_5000.tif']), gdal.GA_ReadOnly)
-                rb = ds.GetRasterBand(1)
-                self.soil_bd.append(rb.ReadAsArray())
-            
-            ds = gdal.Open(ac.GetPath([self.data_folder,'soil','soilgrids','id30forsoilgrids.tif']), gdal.GA_ReadOnly)
-            rb = ds.GetRasterBand(1)
-            self.soilgrids_id30=rb.ReadAsArray()
+                self.soilgrids_id30=rb.ReadAsArray()
         except:
             pass
         
@@ -791,10 +792,10 @@ class acea_model:
                         data = np.load(ac.GetPath([folder_path,f]), allow_pickle=True) # Read the output file
 
                         # Crop growth variables to save
-                        insert_limit = len(data['general'][-gs_to_consider:,5].reshape(-1,1))
-                        yields[:insert_limit, row, col] = data['general'][-gs_to_consider:,5].reshape(-1,1) # Crop yields [dry ton ha-1 gs-1]
-                        biom[:insert_limit, row, col] = data['general'][-gs_to_consider:,6].reshape(-1,1) # Crop biomass [dry ton ha-1 gs-1]
-                        gdd[:insert_limit, row, col] = data['general'][-gs_to_consider:,7].reshape(-1,1) # Accumulated GDDs [GDDs]
+                        insert_limit = len(data['general'][-gs_to_consider:,6].reshape(-1,1))
+                        yields[:insert_limit, row, col] = data['general'][-gs_to_consider:,6].reshape(-1,1) # Crop yields [dry ton ha-1 gs-1]
+                        biom[:insert_limit, row, col] = data['general'][-gs_to_consider:,20].reshape(-1,1) # Crop biomass [dry ton ha-1 gs-1]              
+                        gdd[:insert_limit, row, col] = data['general'][-gs_to_consider:,10].reshape(-1,1) # Accumulated GDDs [GDDs]
                         
                         _p_days = data['general'][-gs_to_consider:,2].reshape(-1,1)[:,0] # Planting day
                         _a_days = data['general'][-gs_to_consider:,3].reshape(-1,1)[:,0] # Anthesis day
@@ -824,16 +825,16 @@ class acea_model:
                         if int(np.min(matyday[:, row, col])) < 0 : raise Exception("Error with maturity")
                             
                         # Water balance variables to save
-                        pirnreq[:insert_limit, row, col] = data['general'][-gs_to_consider:,10].reshape(-1,1) # Irrigation demand [mm] or [kg m-2 gs-1]
-                        soilevap[:insert_limit, row, col] = data['general'][-gs_to_consider:,14].reshape(-1,1) # Evaporation [mm] or [kg m-2 gs-1]
-                        transp[:insert_limit, row, col] = data['general'][-gs_to_consider:,15].reshape(-1,1) # Transpiration [mm] or [kg m-2 gs-1]
+                        pirnreq[:insert_limit, row, col] = data['general'][-gs_to_consider:,9].reshape(-1,1) # Irrigation demand [mm] or [kg m-2 gs-1]
+                        soilevap[:insert_limit, row, col] = data['general'][-gs_to_consider:,16].reshape(-1,1) # Evaporation [mm] or [kg m-2 gs-1]
+                        transp[:insert_limit, row, col] = data['general'][-gs_to_consider:,17].reshape(-1,1) # Transpiration [mm] or [kg m-2 gs-1]
                         aet[:insert_limit, row, col] = soilevap[:insert_limit, row, col] + transp[:insert_limit, row, col] # Evapotranspiration [mm] or [kg m-2 gs-1]
-                        runoff[:insert_limit, row, col] = data['general'][-gs_to_consider:,16].reshape(-1,1) # Runoff [mm] or [kg m-2 gs-1]
+                        runoff[:insert_limit, row, col] = data['general'][-gs_to_consider:,18].reshape(-1,1) # Runoff [mm] or [kg m-2 gs-1]
                         
                         # CWU [mm] variables to save
-                        cwu_green[:insert_limit, row, col] = data['cwu'][-gs_to_consider:,0].reshape(-1,1)
-                        cwu_blue_ir[:insert_limit, row, col] = data['cwu'][-gs_to_consider:,1].reshape(-1,1)
-                        cwu_blue_cr[:insert_limit, row, col] = data['cwu'][-gs_to_consider:,2].reshape(-1,1)
+                        cwu_green[:insert_limit, row, col] = data['watercolor'][-gs_to_consider:,1].reshape(-1,1)
+                        cwu_blue_ir[:insert_limit, row, col] = data['watercolor'][-gs_to_consider:,2].reshape(-1,1)
+                        cwu_blue_cr[:insert_limit, row, col] = data['watercolor'][-gs_to_consider:,3].reshape(-1,1)
                         
                         cells_to_save.append(cell_id)
                         #if len(cells_to_save)%1000==0: print(len(cells_to_save))
@@ -1285,7 +1286,7 @@ class acea_model:
         avg_yield = np.around(np.mean(outputs.final_stats['Dry yield (tonne/ha)'].values),1)
         avg_cwu_g = np.around(np.mean(outputs.final_watercolor['ET green (mm)'].values),1)
         avg_cwu_b = np.around(np.mean(outputs.final_watercolor['ET blue irr (mm)'].values + outputs.final_watercolor['ET blue cr (mm)'].values),1)
-        avg_ir = np.around(np.mean(outputs.final_stats['Irrigation (mm)'].values),1)
+        avg_ir = np.around(np.mean(outputs.final_stats['Seasonal irrigation (mm)'].values),1)
         avg_cr = np.around(np.mean(outputs.final_stats['Capillary rise (mm)'].values),1)
         avg_e = np.around(np.mean(outputs.final_stats['Evaporation (mm)'].values),1)
         avg_t = np.around(np.mean(outputs.final_stats['Transpiration (mm)'].values),1)

@@ -32,36 +32,37 @@ class Output:
         
         self.final_stats = pd.DataFrame(
             columns=[
-                "Season",
-                "crop Type",
-                'Planting Date (YYYY/MM/DD)',
-                'Anthesis Date (YYYY/MM/DD)',
-                "Harvest Date (YYYY/MM/DD)",
-                "Harvest Date (Step)",
-                "Dry yield (tonne/ha)",
-                "Fresh yield (tonne/ha)",
-                "Yield potential (tonne/ha)",
-                "Seasonal irrigation (mm)",
-                'GDD cummulative',
-                'Initial Soil Water (mm)',
-                'Precipitation (mm)',
-                'Capillary rise (mm)',
-                'GW inflow (mm)',
-                'Final Soil Water (mm)',
-                'Evaporation (mm)',
-                'Transpiration (mm)',
-                'Runoff (mm)',
-                'Percolation (mm)',
+                "Season",#0
+                "crop Type",#1
+                'Planting Date (YYYY/MM/DD)',#2
+                'Anthesis Date (YYYY/MM/DD)',#3
+                "Harvest Date (YYYY/MM/DD)",#4
+                "Harvest Date (Step)",#5
+                "Dry yield (tonne/ha)",#6
+                "Fresh yield (tonne/ha)",#7
+                "Yield potential (tonne/ha)",#8
+                "Seasonal irrigation (mm)",#9
+                'GDD cummulative',#10
+                'Initial Soil Water (mm)',#11
+                'Precipitation (mm)',#12
+                'Capillary rise (mm)',#13
+                'GW inflow (mm)',#14
+                'Final Soil Water (mm)',#15
+                'Evaporation (mm)',#16
+                'Transpiration (mm)',#17
+                'Runoff (mm)',#18
+                'Percolation (mm)',#19
+                'Biomass (dry tonne/ha)',#20
             ])
             
         self.final_watercolor = pd.DataFrame(
             columns=[
-                "Season",
-                'ET green (mm)',
-                'ET blue irr (mm)',
-                'ET blue cr (mm)',
-                'Storage green (mm)',
-                'Storage blue irr (mm)',
-                'Storage blue cr (mm)'
+                "Season",#0
+                'ET green (mm)',#1
+                'ET blue irr (mm)',#2
+                'ET blue cr (mm)',#3
+                'Storage green (mm)',#4
+                'Storage blue irr (mm)',#5
+                'Storage blue cr (mm)'#6
             ]
         )
