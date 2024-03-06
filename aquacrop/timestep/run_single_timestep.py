@@ -641,7 +641,6 @@ def solution_single_time_step(
                     NewCond.gdd_cum,
                     NewCond.Wr0, 
                     NewCond.Pcum, 
-                    IrrTot, 
                     NewCond.CRcum, 
                     NewCond.GWcum,
                     NewCond.Wr_end, 
@@ -682,8 +681,7 @@ def solution_single_time_step(
                     NewCond.harvest_flag = True # Set harvest flag
                     outputs.final_stats.iloc[clock_struct.season_counter,11:] = [
                             NewCond.Wr0, 
-                            NewCond.Pcum, 
-                            IrrTot, 
+                            NewCond.Pcum,  
                             NewCond.CRcum, 
                             NewCond.GWcum,
                             NewCond.Wr_end, 
